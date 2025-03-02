@@ -24,148 +24,109 @@
                 <h1>Fixing GitHub Pages Custom Domain Redirect Loop</h1>
                 <p class="post-date">March 2, 2025</p>
                 <div class="post-content">
-                    <h2>Problem Description</h2>
                     <p>While migrating my personal website from Squarespace to GitHub Pages and configuring a custom domain, I encountered a redirect loop issue. The website was stuck in an infinite redirect loop between the www and non-www versions.</p>
+                    
+                    <h2>The Problem</h2>
+                    <p>The redirect loop occurred due to conflicting configurations:</p>
+                    <ul>
+                        <li>Original problematic setup:
+                            <ul>
+                                <li>Incorrect Domain Configuration:
+                                    <ul>
+                                        <li>CNAME file in GitHub repo set to: binhuang.dev</li>
+                                        <li>DNS A Records pointing binhuang.dev → GitHub IPs</li>
+                                        <li>DNS CNAME record pointing www.binhuang.dev → GitHub Pages</li>
+                                    </ul>
+                                </li>
+                                <li>This mixed configuration caused GitHub Pages to redirect between:
+                                    binhuang.dev ↔ www.binhuang.dev repeatedly</li>
+                            </ul>
+                        </li>
+                    </ul>
 
-                    <h2>Root Cause</h2>
-                    <p>After investigation, the issue was traced to DNS configuration:</p>
+                    <h2>The Solution</h2>
+                    <p>The root cause: Using both A records for apex domain (binhuang.dev) 
+                        and CNAME for www subdomain without specifying primary domain preference. 
+                        The fix was to use www subdomain as the primary domain in github pages:</p>
+                    <ul>
+                        <li>Set GitHub Pages custom domain to www.binhuang.dev instead of binhuang.dev</li>
+                        <li>This works because:
+                            <ul>
+                                <li>CNAME record provides clean, unambiguous routing to GitHub Pages</li>
+                                <li>No conflict with any existing apex domain settings</li>
+                                <li>GitHub Pages can properly manage all redirects when it's the primary handler</li>
+                            </ul>
+                        </li>
+                    </ul>
 
-                    <h3>Understanding DNS Basics</h3>
-                    <p>Before diving into the solution, it's helpful to understand how DNS (Domain Name System) works:</p>
-
-                    <div class="diagram">
-                        <h4>DNS Resolution Process</h4>
-                        <pre class="ascii-diagram">
-User                DNS Server           GitHub Pages
- |                      |                     |
- |   binhuang.dev?     |                     |
- |-------------------→ |                     |
- |                     |                     |
- |                     |  [DNS Lookup]       |
- |                     |  A record → IP      |
- |                     |                     |
- |    IP Address       |                     |
- | ←------------------ |                     |
- |                     |                     |
- |         HTTP Request to IP               |
- |-------------------------------------→    |
- |                     |                    |
- |         Website Content                  |
- | ←------------------------------------- |</pre>
-                    </div>
+                    <h2>Understanding DNS Configuration</h2>
+                    <p>Let's understand how DNS (Domain Name System) works in detail, as this is crucial to understanding both the problem and the solution:</p>
 
                     <ul>
                         <li>DNS is like the internet's phone book, translating human-readable domain names into IP addresses</li>
                         <li>Different types of DNS records serve different purposes:
                             <ul>
-                                <li>A records: Direct mapping of a domain to IP addresses</li>
-                                <li>CNAME records: Alias one domain name to another domain name</li>
+                                <li>A records: Direct mapping of a domain to IP addresses
+                                    <ul>
+                                        <li>Pros: Direct routing</li>
+                                        <li>Cons: Must be manually updated if IPs change</li>
+                                    </ul>
+                                </li>
+                                <li>CNAME records: Alias one domain name to another domain name
+                                    <ul>
+                                        <li>Pros: Flexible, automatically follows target domain's IP changes</li>
+                                        <li>Cons: Slightly longer resolution time (needs extra lookup)</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li>The apex domain (e.g., example.com) and www subdomain (www.example.com) are technically different and can be configured differently</li>
                     </ul>
 
-                    <h3>WWW vs Non-WWW Domains</h3>
                     <div class="diagram">
-                        <h4>DNS Record Types Comparison</h4>
+                        <h4>DNS Resolution Process</h4>
                         <pre class="ascii-diagram">
-┌─────────────────────────┐      ┌──────────────────────┐
-│    Apex (binhuang.dev)  │      │  www.binhuang.dev    │
-├─────────────────────────┤      ├──────────────────────┤
-│    A Records (Direct)   │      │   CNAME (Flexible)   │
-├─────────────────────────┤      ├──────────────────────┤
-│ → 185.199.108.153      │      │ → github.io          │
-│ → 185.199.109.153      │      │   (Can change IPs    │
-│ → 185.199.110.153      │      │    without updating  │
-│ → 185.199.111.153      │      │    DNS)              │
-└─────────────────────────┘      └──────────────────────┘</pre>
+Browser            DNS Resolver         GitHub Pages
+ |                     |                     |
+ |  www.binhuang.dev?  |                     |
+ |-------------------→ |                     |
+ |                     |                     |
+ |                     |  [DNS Lookup]       |
+ |                     |  CNAME → github.io  |
+ |                     |  Then IP lookup     |
+ |                     |                     |
+ |    IP Address       |                     |
+ | ←------------------ |                     |
+ |                     |                     |
+ |         HTTP Request to IP                |
+ |-----------------------------------------→ |
+ |                     |                     |
+ |         Website Content                   |
+ | ←-----------------------------------------|</pre>
                     </div>
 
-                    <h3>The Redirect Loop Problem</h3>
-                    <div class="diagram">
-                        <h4>Initial Problematic Configuration</h4>
-                        <pre class="ascii-diagram">
-┌──────────────┐     ┌───────────────┐     ┌──────────────┐
-│              │     │               │     │              │
-│ binhuang.dev │ →   │  Squarespace  │  →  │    www.     │
-│              │     │               │     │              │
-└──────────────┘     └───────────────┘     └──────────────┘
-       ↑                                           │
-       │                                          │
-       │              ┌───────────────┐           │
-       │              │               │           │
-       └────────────  │ GitHub Pages  │ ←─────────┘
-                      │               │
-                      └───────────────┘</pre>
-                    </div>
-
-                    <p>This difference in DNS record types between www and non-www domains is crucial for understanding why we need different configurations for each.</p>
-
-                    <h2>The Problem</h2>
-                    <ul>
-                        <li>The apex domain (binhuang.dev) was still pointing to Squarespace servers</li>
-                        <li>The www subdomain (www.binhuang.dev) was already pointing to GitHub Pages</li>
-                        <li>This resulted in the following loop:
-                            <pre>
-binhuang.dev → Squarespace → www.binhuang.dev 
-→ GitHub Pages → binhuang.dev → loop continues...</pre>
-                        </li>
-                    </ul>
-
-                    <h2>Solution</h2>
-                    <p>To resolve this issue, the following steps were required:</p>
+                    <h4>Step-by-Step DNS Resolution</h4>
                     <ol>
-                        <li>Disconnect from Squarespace:
+                        <li>Browser Request:
                             <ul>
-                                <li>Log into Squarespace account</li>
-                                <li>Remove all domain-related settings</li>
+                                <li>User types www.binhuang.dev in browser</li>
+                                <li>Browser asks local DNS resolver for the IP address</li>
                             </ul>
                         </li>
-                        <li>Update DNS Records:
+                        <li>DNS Lookup:
                             <ul>
-                                <li>Set A records pointing to GitHub Pages IPs:
-                                    <pre>
-A Records:
-Host: @ or empty
-Values: 185.199.108.153
-        185.199.109.153
-        185.199.110.153
-        185.199.111.153</pre>
-                                </li>
-                                <li>Set CNAME record:
-                                    <pre>
-CNAME Record:
-Host: www
-Value: your-github-username.github.io</pre>
-                                </li>
+                                <li>DNS resolver checks CNAME record for www.binhuang.dev</li>
+                                <li>Finds it points to robin-codespace.github.io</li>
+                                <li>Then resolves GitHub Pages' domain to actual IP addresses</li>
                             </ul>
                         </li>
-                        <li>Configure GitHub Pages:
+                        <li>Connection:
                             <ul>
-                                <li>Set Custom domain to apex domain in repository settings</li>
-                                <li>Ensure CNAME file content is correct</li>
-                            </ul>
-                        </li>
-                        <li>Wait for DNS Propagation:
-                            <ul>
-                                <li>DNS changes may take up to 24 hours to propagate</li>
-                                <li>Monitor changes using dig command</li>
+                                <li>Browser connects to GitHub's servers using the resolved IP</li>
+                                <li>GitHub serves your website content</li>
                             </ul>
                         </li>
                     </ol>
-
-                    <h2>Verification</h2>
-                    <p>Use these commands to verify the configuration:</p>
-                    <pre>
-# Check A records
-dig +noall +answer binhuang.dev
-
-# Check CNAME record
-dig +noall +answer www.binhuang.dev
-
-# Check HTTP responses
-curl -I https://binhuang.dev
-curl -I https://www.binhuang.dev</pre>
 
                     <h2>Important Notes</h2>
                     <ul>
@@ -182,4 +143,4 @@ curl -I https://www.binhuang.dev</pre>
         </footer>
     </div>
 </body>
-</html> 
+</html>
