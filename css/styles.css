@@ -118,4 +118,26 @@ footer {
 
 .blog-post h3 a:hover {
     color: #0066cc;
+}
+
+/* Diagram Styles */
+.diagram {
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+.ascii-diagram {
+    font-family: monospace;
+    white-space: pre;
+    margin: 1rem 0;
+    line-height: 1.2;
+}
+
+.diagram h4 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.1rem;
 } 
