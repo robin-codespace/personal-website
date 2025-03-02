@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixing GitHub Pages Custom Domain Redirect Loop - Bin Huang's Blog</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <nav>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/#about">About</a></li>
+                    <li><a href="/#blogs">Blogs</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main>
+            <article class="blog-post">
+                <h1>Fixing GitHub Pages Custom Domain Redirect Loop</h1>
+                <p class="post-date">March 2, 2025</p>
+                <div class="post-content">
+                    <h2>Problem Description</h2>
+                    <p>While migrating my personal website from Squarespace to GitHub Pages and configuring a custom domain, I encountered a redirect loop issue. The website was stuck in an infinite redirect loop between the www and non-www versions.</p>
+
+                    <h2>Root Cause</h2>
+                    <p>After investigation, the issue was traced to DNS configuration:</p>
+                    <ul>
+                        <li>The apex domain (binhuang.dev) was still pointing to Squarespace servers</li>
+                        <li>The www subdomain (www.binhuang.dev) was already pointing to GitHub Pages</li>
+                        <li>This resulted in the following loop:
+                            <pre>
+binhuang.dev → Squarespace → www.binhuang.dev 
+→ GitHub Pages → binhuang.dev → loop continues...</pre>
+                        </li>
+                    </ul>
+
+                    <h2>Solution</h2>
+                    <p>To resolve this issue, the following steps were required:</p>
+                    <ol>
+                        <li>Disconnect from Squarespace:
+                            <ul>
+                                <li>Log into Squarespace account</li>
+                                <li>Remove all domain-related settings</li>
+                            </ul>
+                        </li>
+                        <li>Update DNS Records:
+                            <ul>
+                                <li>Set A records pointing to GitHub Pages IPs:
+                                    <pre>
+A Records:
+Host: @ or empty
+Values: 185.199.108.153
+        185.199.109.153
+        185.199.110.153
+        185.199.111.153</pre>
+                                </li>
+                                <li>Set CNAME record:
+                                    <pre>
+CNAME Record:
+Host: www
+Value: your-github-username.github.io</pre>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>Configure GitHub Pages:
+                            <ul>
+                                <li>Set Custom domain to apex domain in repository settings</li>
+                                <li>Ensure CNAME file content is correct</li>
+                            </ul>
+                        </li>
+                        <li>Wait for DNS Propagation:
+                            <ul>
+                                <li>DNS changes may take up to 24 hours to propagate</li>
+                                <li>Monitor changes using dig command</li>
+                            </ul>
+                        </li>
+                    </ol>
+
+                    <h2>Verification</h2>
+                    <p>Use these commands to verify the configuration:</p>
+                    <pre>
+# Check A records
+dig +noall +answer binhuang.dev
+
+# Check CNAME record
+dig +noall +answer www.binhuang.dev
+
+# Check HTTP responses
+curl -I https://binhuang.dev
+curl -I https://www.binhuang.dev</pre>
+
+                    <h2>Important Notes</h2>
+                    <ul>
+                        <li>Remove all old DNS records to avoid conflicts</li>
+                        <li>Website might be temporarily inaccessible during DNS propagation</li>
+                        <li>If using HTTPS, wait for certificate configuration to complete</li>
+                    </ul>
+                </div>
+            </article>
+        </main>
+
+        <footer>
+            <p>© 2025 Bin Huang's Blog. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html> 
