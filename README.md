@@ -46,31 +46,6 @@ personal-website/
 - GitHub Pages for hosting
 - Custom domain configuration
 
-## 🚀 Local Development
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/robin-codespace/personal-website.git
-   ```
-
-2. Navigate to the project directory:
-   ```bash
-   cd personal-website
-   ```
-
-3. Open `index.html` in your browser or use a local server:
-   ```bash
-   python -m http.server 8000
-   ```
-
-## 📝 Contributing
-
-While this is primarily a personal website, if you find any issues or have suggestions:
-
-1. Open an issue
-2. Describe the problem/suggestion
-3. If applicable, submit a pull request
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
