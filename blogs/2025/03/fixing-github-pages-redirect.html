@@ -29,25 +29,19 @@
                     <h2>The Problem</h2>
                     <p>The redirect loop occurred due to conflicting configurations:</p>
                     <ul>
-                        <li>Original problematic setup:
+                        <li>Incorrect Domain Configuration:
                             <ul>
-                                <li>Incorrect Domain Configuration:
-                                    <ul>
-                                        <li>CNAME file in GitHub repo set to: binhuang.dev</li>
-                                        <li>DNS A Records pointing binhuang.dev → GitHub IPs</li>
-                                        <li>DNS CNAME record pointing www.binhuang.dev → GitHub Pages</li>
-                                    </ul>
-                                </li>
-                                <li>This mixed configuration caused GitHub Pages to redirect between:
-                                    binhuang.dev ↔ www.binhuang.dev repeatedly</li>
+                                <li>CNAME file in GitHub repo set to: binhuang.dev</li>
+                                <li>DNS A Records pointing binhuang.dev → GitHub IPs</li>
+                                <li>DNS CNAME record pointing www.binhuang.dev → GitHub Pages</li>
                             </ul>
                         </li>
+                        <li>This mixed configuration caused GitHub Pages to redirect between:
+                            binhuang.dev ↔ www.binhuang.dev repeatedly</li>
                     </ul>
 
                     <h2>The Solution</h2>
-                    <p>The root cause: Using both A records for apex domain (binhuang.dev) 
-                        and CNAME for www subdomain without specifying primary domain preference. 
-                        The fix was to use www subdomain as the primary domain in github pages:</p>
+                    <p>The fix was to use www subdomain as the primary domain in github pages:</p>
                     <ul>
                         <li>Set GitHub Pages custom domain to www.binhuang.dev instead of binhuang.dev</li>
                         <li>This works because:
