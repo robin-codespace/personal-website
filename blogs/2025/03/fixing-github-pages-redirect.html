@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fixing GitHub Pages Custom Domain Redirect Loop - Bin Huang's Blog</title>
+    <title>Redirect, To Where?</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
@@ -21,112 +21,98 @@
 
         <main>
             <article class="blog-post">
-                <h1>Fixing GitHub Pages Custom Domain Redirect Loop</h1>
+                <h1>Understanding Domain Redirects: A Real-World Example</h1>
                 <p class="post-date">March 2, 2025</p>
                 <div class="post-content">
-                    <p>While migrating my personal website from Squarespace to GitHub Pages and configuring a custom domain, I encountered a redirect loop issue. The website was stuck in an infinite redirect loop between the www and non-www versions.</p>
+                    <h2>Understanding Domain Redirects: A Real-World Example</h2>
+                    <p>When setting up my personal website (binhuang.dev) on GitHub Pages, I noticed an interesting redirect chain that's worth understanding. Let's break down what happens when you type "binhuang.dev" in your browser:</p>
                     
-                    <h2>The Problem</h2>
-                    <p>The redirect loop occurred due to conflicting configurations:</p>
-                    <ul>
-                        <li>Incorrect Domain Configuration:
-                            <ul>
-                                <li>CNAME file in GitHub repo set to: binhuang.dev</li>
-                                <li>DNS A Records pointing binhuang.dev → GitHub IPs</li>
-                                <li>DNS CNAME record pointing www.binhuang.dev → GitHub Pages</li>
-                            </ul>
-                        </li>
-                        <li>This mixed configuration caused GitHub Pages to redirect between:
-                            binhuang.dev ↔ www.binhuang.dev repeatedly</li>
-                    </ul>
-
-                    <h2>The Solution</h2>
-                    <p>The fix was to use www subdomain as the primary domain in github pages:</p>
-                    <ul>
-                        <li>Set GitHub Pages custom domain to www.binhuang.dev instead of binhuang.dev</li>
-                        <li>This works because:
-                            <ul>
-                                <li>CNAME record provides clean, unambiguous routing to GitHub Pages</li>
-                                <li>No conflict with any existing apex domain settings</li>
-                                <li>GitHub Pages can properly manage all redirects when it's the primary handler</li>
-                            </ul>
-                        </li>
-                    </ul>
-
-                    <h2>Understanding DNS Configuration</h2>
-                    <p>Let's understand how DNS (Domain Name System) works in detail, as this is crucial to understanding both the problem and the solution:</p>
-
-                    <ul>
-                        <li>DNS is like the internet's phone book, translating human-readable domain names into IP addresses</li>
-                        <li>Different types of DNS records serve different purposes:
-                            <ul>
-                                <li>A records: Direct mapping of a domain to IP addresses
-                                    <ul>
-                                        <li>Pros: Direct routing</li>
-                                        <li>Cons: Must be manually updated if IPs change</li>
-                                    </ul>
-                                </li>
-                                <li>CNAME records: Alias one domain name to another domain name
-                                    <ul>
-                                        <li>Pros: Flexible, automatically follows target domain's IP changes</li>
-                                        <li>Cons: Slightly longer resolution time (needs extra lookup)</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>The apex domain (e.g., example.com) and www subdomain (www.example.com) are technically different and can be configured differently</li>
-                    </ul>
-
                     <div class="diagram">
-                        <h4>DNS Resolution Process</h4>
+                        <h4>Actual Request Chain</h4>
                         <pre class="ascii-diagram">
-Browser            DNS Resolver         GitHub Pages
- |                     |                     |
- |  www.binhuang.dev?  |                     |
- |-------------------→ |                     |
- |                     |                     |
- |                     |  [DNS Lookup]       |
- |                     |  CNAME → github.io  |
- |                     |  Then IP lookup     |
- |                     |                     |
- |    IP Address       |                     |
- | ←------------------ |                     |
- |                     |                     |
- |         HTTP Request to IP                |
- |-----------------------------------------→ |
- |                     |                     |
- |         Website Content                   |
- | ←-----------------------------------------|</pre>
+ http://binhuang.dev → https://binhuang.dev → https://www.binhuang.dev
+ └─── HTTP to HTTPS ──┘ └─── Apex to WWW subdomain ───┘</pre>
                     </div>
 
-                    <h4>Step-by-Step DNS Resolution</h4>
+                    <h3>Let's Understand Each Step</h3>
+                    
+                    <h4>Step 1: HTTP to HTTPS Redirect</h4>
+                    <p>When you type "binhuang.dev" in your browser:</p>
+                    <ul>
+                        <li>Browser initially requests: http://binhuang.dev</li>
+                        <li>Server responds with a 301 redirect to: https://binhuang.dev</li>
+                        <li>This is a security best practice, ensuring all traffic uses HTTPS</li>
+                    </ul>
+
+                    <h4>Step 2: Apex to WWW Redirect</h4>
+                    <p>After getting to HTTPS:</p>
+                    <ul>
+                        <li>Browser requests: https://binhuang.dev</li>
+                        <li>Server responds with another 301 redirect to: https://www.binhuang.dev</li>
+                        <li>This is where our DNS configuration becomes important</li>
+                    </ul>
+
+                    <h3>Understanding the Domain Types</h3>
+                    
+                    <h4>Apex Domain (binhuang.dev)</h4>
+                    <ul>
+                        <li>Also called the "naked domain"</li>
+                        <li>Uses A records in DNS configuration</li>
+                        <li>Points directly to IP addresses</li>
+                        <li>Example: binhuang.dev → GitHub Pages IPs</li>
+                    </ul>
+
+                    <h4>WWW Subdomain (www.binhuang.dev)</h4>
+                    <ul>
+                        <li>A type of subdomain</li>
+                        <li>Uses CNAME record in DNS configuration</li>
+                        <li>Can point to another domain name</li>
+                        <li>Example: www.binhuang.dev → username.github.io</li>
+                    </ul>
+
+                    <h3>DNS Configuration</h3>
+                    <div class="diagram">
+                        <h4>Current Working Setup</h4>
+                        <pre class="ascii-diagram">
+ DNS Configuration:
+ ┌──────────────────────────────────────────────┐
+ │ CNAME Record:                                │
+ │ www.binhuang.dev → robin-codespace.github.io │
+ └──────────────────────────────────────────────┘
+
+ GitHub Pages Configuration:
+ ┌─────────────────────────────────┐
+ │ Custom Domain: www.binhuang.dev │
+ └─────────────────────────────────┘</pre>
+                    </div>
+
+                    <h3>Why This Setup Works</h3>
                     <ol>
-                        <li>Browser Request:
+                        <li>Clean DNS Resolution:
                             <ul>
-                                <li>User types www.binhuang.dev in browser</li>
-                                <li>Browser asks local DNS resolver for the IP address</li>
+                                <li>CNAME record provides direct routing to GitHub Pages</li>
+                                <li>No conflicting DNS settings</li>
                             </ul>
                         </li>
-                        <li>DNS Lookup:
+                        <li>Proper Redirect Handling:
                             <ul>
-                                <li>DNS resolver checks CNAME record for www.binhuang.dev</li>
-                                <li>Finds it points to robin-codespace.github.io</li>
-                                <li>Then resolves GitHub Pages' domain to actual IP addresses</li>
+                                <li>HTTP → HTTPS is handled automatically by GitHub Pages</li>
+                                <li>Apex → WWW redirect is consistent</li>
                             </ul>
                         </li>
-                        <li>Connection:
+                        <li>Better Flexibility:
                             <ul>
-                                <li>Browser connects to GitHub's servers using the resolved IP</li>
-                                <li>GitHub serves your website content</li>
+                                <li>CNAME follows GitHub Pages' IP changes automatically</li>
+                                <li>Reduces maintenance needs</li>
                             </ul>
                         </li>
                     </ol>
-
-                    <h2>Important Notes</h2>
+                    <h3>Key Takeaways</h3>
                     <ul>
-                        <li>Remove all old DNS records to avoid conflicts</li>
-                        <li>Website might be temporarily inaccessible during DNS propagation</li>
-                        <li>If using HTTPS, wait for certificate configuration to complete</li>
+                        <li>Domain redirects are a normal part of modern web architecture</li>
+                        <li>Using www as primary domain can provide more flexibility</li>
+                        <li>HTTPS is enforced through automatic redirects</li>
+                        <li>Proper DNS configuration is crucial for smooth operation</li>
                     </ul>
                 </div>
             </article>
