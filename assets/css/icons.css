@@ -1,0 +1,17 @@
+/* 图标通用样式 */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
+    margin-right: var(--spacing-xs);
+}
+
+/* 特定图标样式 */
+.icon-calendar::before {
+    font-family: 'Font Awesome 6 Free';
+    content: "\f073";
+}
+
+/* 更多图标样式... */ 
