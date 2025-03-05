@@ -3,57 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bin Huang - Backend Developer</title>
+    <title>Bin Huang - Backend Engineer</title>
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
         <header>
             <nav>
                 <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#about">About</a></li>
-                    <li><a href="#blogs">Blogs</a></li>
-                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#home"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#about"><i class="fas fa-user"></i> About</a></li>
+                    <li><a href="#blogs"><i class="fas fa-blog"></i> Blogs</a></li>
+                    <li>
+                        <a href="mailto:hbinblog@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://github.com/robin-codespace" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/bin-huang-010642117/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </li>
                 </ul>
             </nav>
         </header>
 
         <main>
             <section id="home" class="hero">
-                <h2>Hi, I'm Bin Huang</h2>
-                <p>A Backend Developer</p>
+                <h2><i class="fas fa-code"></i> Hi, I'm Bin Huang</h2>
+                <p><i class="fas fa-terminal"></i> A Backend Engineer</p>
             </section>
 
             <section id="about">
-                <h2>About Me</h2>
-                <p>I'm a backend developer specializing in server-side technologies and database management. While frontend isn't my forte, I've used Cursor AI to help generate this clean and professional website layout.</p>
+                <h2><i class="fas fa-info-circle"></i> About Me</h2>
+                <p>I'm a backend engineer specializing in server-side technologies and database management.</p>
             </section>
 
             <section id="blogs">
-                <h2>Blogs</h2>
+                <h2><i class="fas fa-pencil-alt"></i> Blogs</h2>
                 <div class="blog-grid">
                     <article class="blog-post">
-                        <h3><a href="/blogs/2025/03/fixing-github-pages-redirect.html">Redirect, To Where?</a></h3>
-                        <p class="post-date">March 2, 2025</p>
+                        <h3><a href="/blogs/2025/03/web-page-redirection.html"><i class="fas fa-link"></i> Redirect, To Where?</a></h3>
+                        <p class="post-date"><i class="far fa-calendar-alt"></i> March 2, 2025</p>
                         <div class="post-content">
                             <p>While migrating my personal website from Squarespace to GitHub Pages and configuring a custom domain, I noticed an interesting redirect chain that's worth understanding...</p>
-                            <a href="/blogs/2025/03/fixing-github-pages-redirect.html" class="read-more">Read More →</a>
+                            <a href="/blogs/2025/03/web-page-redirection.html" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
                         </div>
                     </article>
                 </div>
             </section>
-
-            <section id="contact">
-                <h2>Contact Me</h2>
-                <p>Email: <a href="mailto:hbinblog@gmail.com">hbinblog@gmail.com</a></p>
-                <p>GitHub: <a href="https://github.com/robin-codespace" target="_blank">github.com/robin-codespace</a></p>
-                <p class="ai-disclosure">Note: This website's frontend was generated using Cursor AI to ensure a professional presentation while I focus on backend development.</p>
-            </section>
         </main>
 
         <footer>
-            <p>© 2024 Bin Huang. All rights reserved.</p>
+            <p><i class="far fa-copyright"></i> 2025 Bin Huang. All rights reserved.</p>
         </footer>
     </div>
 </body>
@@ -65,6 +63,7 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
 
         .container {
@@ -84,12 +83,21 @@
             text-decoration: none;
             color: #333;
             font-weight: bold;
+            transition: color 0.3s ease;
+            margin: 0 8px;
+        }
+
+        nav a:hover {
+            color: #007bff;
         }
 
         .hero {
             text-align: center;
             padding: 100px 0;
-            background-color: #f5f5f5;
+            background: linear-gradient(45deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            border-radius: 10px;
+            margin: 20px 0;
         }
 
         section {
@@ -113,8 +121,10 @@
         footer {
             text-align: center;
             padding: 20px 0;
-            background-color: #333;
+            background: linear-gradient(45deg, #2c3e50 0%, #3498db 100%);
             color: white;
+            border-radius: 10px;
+            margin-top: 20px;
         }
 
         .blog-grid {
@@ -124,10 +134,15 @@
         }
 
         .blog-post {
-            background: #fff;
+            background: rgba(255, 255, 255, 0.9);
             padding: 2rem;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .blog-post:hover {
+            transform: translateY(-5px);
         }
 
         .blog-post h3 {
@@ -159,6 +174,21 @@
             overflow-x: auto;
             font-family: monospace;
             margin: 1rem 0;
+        }
+
+        .fas, .fab, .far {
+            margin-right: 8px;
+        }
+
+        .read-more {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .read-more:hover {
+            color: #0056b3;
         }
     </style>
 
