@@ -25,8 +25,65 @@
 
         <main>
             <section id="home" class="hero">
-                <h2><i class="fas fa-code"></i> Hi, I'm Bin Huang</h2>
-                <p><i class="fas fa-terminal"></i> A Backend Engineer</p>
+                <div class="typing-container">
+                    <h2><i class="fas fa-code"></i> Hi, I'm Bin Huang</h2>
+                    <div class="typing-effect">
+                        <span class="prefix"><i class="fas fa-terminal"></i></span>
+                        <span class="text" data-text='["Backend Engineer", "Problem Solver", "Basketball Fan", "Sports Enthusiast"]'></span>
+                        <span class="cursor">|</span>
+                    </div>
+                </div>
+                <style>
+                    .typing-container {
+                        text-align: center;
+                    }
+                    .typing-effect {
+                        display: inline-flex;
+                        align-items: center;
+                        font-size: 1.2em;
+                    }
+                    .prefix {
+                        margin-right: 10px;
+                    }
+                    .cursor {
+                        animation: blink 1s infinite;
+                    }
+                    @keyframes blink {
+                        0%, 100% { opacity: 1; }
+                        50% { opacity: 0; }
+                    }
+                </style>
+                <script>
+                    const textElement = document.querySelector('.text');
+                    const texts = JSON.parse(textElement.dataset.text);
+                    let textIndex = 0;
+                    let charIndex = 0;
+                    let isDeleting = false;
+
+                    function type() {
+                        const currentText = texts[textIndex];
+                        if (isDeleting) {
+                            textElement.textContent = currentText.substring(0, charIndex-1);
+                            charIndex--;
+                        } else {
+                            textElement.textContent = currentText.substring(0, charIndex+1);
+                            charIndex++;
+                        }
+
+                        if (!isDeleting && charIndex === currentText.length) {
+                            isDeleting = true;
+                            setTimeout(type, 1000); // Reduced from 2000 to 1000
+                        } else if (isDeleting && charIndex === 0) {
+                            isDeleting = false;
+                            textIndex = (textIndex + 1) % texts.length;
+                            setTimeout(type, 200); // Reduced from 500 to 200
+                        } else {
+                            setTimeout(type, isDeleting ? 50 : 100); // Reduced from 100/200 to 50/100
+                        }
+                    }
+
+                    type();
+                </script>
             </section>
 
             <section id="blogs">
