@@ -1,60 +1,43 @@
-# Personal Website & Documentation Hub
+# Astro Starter Kit: Minimal
 
-Welcome to my personal website repository! This space serves multiple purposes:
-
-## 🎯 Purpose
-
-1. **Personal Website**: A clean, professional presentation of my work and background
-2. **Technical Documentation**: A collection of technical guides and solutions
-3. **Resume**: An up-to-date version of my professional experience
-4. **Blog**: Technical articles and problem-solving experiences
-
-## 🏗 Project Structure
-
-```
-personal-website/
-├── index.html           # Main landing page
-├── css/                 # Styling
-│   └── styles.css      
-├── js/                 # JavaScript files (future use)
-├── blogs/              # Technical articles
-│   └── YYYY/          # Year-based organization
-│       └── MM/        # Month-based organization
-├── docs/              # Technical documentation (future)
-└── resume/            # Professional information (future)
+```sh
+npm create astro@latest -- --template minimal
 ```
 
-## 📝 Content Categories
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-### Technical Blog Posts
-- [Fixing GitHub Pages Custom Domain Redirect Loop](blogs/2025/03/fixing-github-pages-redirect.html) - March 2, 2025
+## 🚀 Project Structure
 
-### Documentation (Coming Soon)
-- System Architecture
-- Development Guides
-- Best Practices
+Inside of your Astro project, you'll see the following folders and files:
 
-### Resume (Coming Soon)
-- Professional Experience
-- Technical Skills
-- Projects
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
 
-## 🛠 Technology Stack
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-- HTML5
-- CSS3
-- GitHub Pages for hosting
-- Custom domain configuration
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-## 📄 License
+Any static assets, like images, can be placed in the `public/` directory.
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## 🧞 Commands
 
-## 📞 Contact
+All commands are run from the root of the project, from a terminal:
 
-- Email: [hbinblog@gmail.com](mailto:hbinblog@gmail.com)
-- GitHub: [@robin-codespace](https://github.com/robin-codespace)
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
 
----
+## 👀 Want to learn more?
 
-© 2025 Bin Huang. All rights reserved.
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).

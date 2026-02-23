@@ -1,0 +1,93 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Bin Huang - Backend Engineer">
+    <section id="home" class="hero">
+        <div class="typing-container">
+            <h1 class="hero-title"><i class="fas fa-code"></i> Hi, I'm Bin Huang</h1>
+            <div class="typing-effect">
+                <span class="prefix"><i class="fas fa-terminal"></i></span>
+                <span class="text" data-text='["Backend Engineer", "Problem Solver", "Basketball Fan", "Sports Enthusiast"]'></span>
+                <span class="cursor">|</span>
+            </div>
+            <div class="hero-cta">
+                <a href="#blogs" class="cta-button">Read My Blog <i class="fas fa-arrow-right"></i></a>
+                <a href="https://github.com/robin-codespace" class="cta-button secondary" target="_blank">View My Work <i class="fab fa-github"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <section id="blogs" class="section-blogs">
+        <h2 class="section-title"><i class="fas fa-pencil-alt"></i> Latest Blogs</h2>
+        <div class="blog-grid">
+            <article class="blog-post">
+                <h3><a href="/blogs/2025/03/web-page-redirection"><i class="fas fa-link"></i> Redirect, To Where?</a></h3>
+                <p class="post-date"><i class="far fa-calendar-alt"></i> March 2, 2025</p>
+                <div class="post-content">
+                    <p>While migrating my personal website from Squarespace to GitHub Pages and configuring a custom domain, I noticed an interesting redirect chain that's worth understanding...</p>
+                    <a href="/blogs/2025/03/web-page-redirection" class="read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </article>
+        </div>
+    </section>
+</BaseLayout>
+
+<script>
+    // Typing effect component logic
+    const setupTypingEffect = () => {
+        const textElement = document.querySelector('.text') as HTMLElement;
+        if (textElement && textElement.dataset.text) {
+            const texts = JSON.parse(textElement.dataset.text);
+            let textIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+
+            function type() {
+                const currentText = texts[textIndex];
+                if (isDeleting) {
+                    textElement.textContent = currentText.substring(0, charIndex-1);
+                    charIndex--;
+                } else {
+                    textElement.textContent = currentText.substring(0, charIndex+1);
+                    charIndex++;
+                }
+
+                if (!isDeleting && charIndex === currentText.length) {
+                    isDeleting = true;
+                    setTimeout(type, 2000);
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    textIndex = (textIndex + 1) % texts.length;
+                    setTimeout(type, 500);
+                } else {
+                    setTimeout(type, isDeleting ? 40 : 80);
+                }
+            }
+
+            type();
+        }
+    };
+
+    // Smooth scrolling
+    const setupSmoothScroll = () => {
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId) {
+                    const target = document.querySelector(targetId);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+    };
+
+    // Run on initial load
+    setupTypingEffect();
+    setupSmoothScroll();
+</script>

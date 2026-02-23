@@ -1,0 +1,15 @@
+---
+import BaseLayout from './BaseLayout.astro';
+const { frontmatter } = Astro.props;
+---
+<BaseLayout title={frontmatter.title}>
+    <main>
+        <article class="blog-post" style="max-width: 800px; margin: 0 auto; padding: 4rem 2rem;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">{frontmatter.title}</h1>
+            <p class="post-date"><i class="far fa-calendar-alt"></i> {new Date(frontmatter.pubDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            <div class="post-content" style="margin-top: 2rem;">
+                <slot />
+            </div>
+        </article>
+    </main>
+</BaseLayout>
